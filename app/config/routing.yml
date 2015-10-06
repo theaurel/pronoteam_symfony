@@ -1,0 +1,7 @@
+site_back:
+    resource: "@siteBackBundle/Controller"
+    type:   annotation
+
+site_front:
+    resource: "@siteFrontBundle/Controller"
+    type:   annotation

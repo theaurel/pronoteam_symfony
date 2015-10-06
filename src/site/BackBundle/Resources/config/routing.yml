@@ -1,0 +1,3 @@
+site_back_homepage:
+    path:     /hello/{name}
+    defaults: { _controller: siteBackBundle:Default:index }

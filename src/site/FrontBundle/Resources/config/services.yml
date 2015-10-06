@@ -1,0 +1,4 @@
+services:
+#    site_front.example:
+#        class: site\FrontBundle\Example
+#        arguments: [@service_id, "plain_value", %parameter%]

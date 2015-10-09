@@ -1,16 +1,29 @@
 {# app/Resources/views/base.html.twig #}
 <html>
     <head>
-        {# ... #}
-
+        <meta charset="UTF-8">
+        <title>{% block title %}Watch My Desk{% endblock %}</title>
         {% block stylesheets %}
-            <link href="{{ asset('css/main.css') }}" rel="stylesheet" />
+            <!-- Latest compiled and minified CSS -->
+            <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+
+            <!-- Optional theme -->
+            <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
         {% endblock %}
     </head>
     <body>
+        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+            Connecté en tant que {{ app.user.username }}
+            -
+            <a href="{{ path('fos_user_security_logout') }}">Déconnexion</a>
+        {% else %}
+            <a href="{{ path('fos_user_security_login') }}">Connexion</a>
+        {% endif %}
         {% block body %}{% endblock %}
         {% block javascripts %}
-            <script src="{{ asset('js/main.js') }}"></script>
+            <!-- Latest compiled and minified JavaScript -->
+            <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+            <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
         {% endblock %}
     </body>
 </html>

@@ -1,0 +1,9 @@
+{% extends 'siteFrontBundle::layout.html.twig' %}
+
+{% block content %}
+    <ul>
+        {% for tournoi in tournois %}
+            <li><a href="{{ path('tournoiid', { 'id_tournoi': tournoi.id }) }}">{{ tournoi.place }}</a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}

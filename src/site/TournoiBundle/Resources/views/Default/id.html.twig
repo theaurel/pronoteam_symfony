@@ -1,0 +1,32 @@
+{% extends 'siteFrontBundle::layout.html.twig' %}
+
+{% block content %}
+    <table class='filter table table-condensed table-hover table-striped'>
+    <thead>
+    <tr>
+        <th class="hidden-xs"></th>
+        <th class="text-right">Joueur Domicile</th>
+        <th class="text-right">Equipe Domicile</th>
+        <th class="text-center">Score</th>
+        <th class="text-left">Equipe Exterieur</th>
+        <th class="text-left">Joueur Exterieur</th>
+        <th></th>
+    </tr>
+    </thead>
+    {%  for match in matchs %}
+        <tr id="match_{{ match.id }}">
+            <td class="hidden-xs">
+                <span class='horairePetit'>
+                    {{ match.dateScore|date('Y-m-d H:i:s')  }}
+                </span>
+            </td>
+            <td class='text-right'>{{ match.getUserDom() }}</td>
+            <td class='text-right'>{{ array_equipe[match.getUserDom().getId()].getName() }}</td>
+            <td class='score text-center bold'>
+                {{ match.scoreDom }} - {{ match.scoreExt }}
+            </td>
+            <td class='text-left'>{{ array_equipe[match.getUserExt().getId()].getName() }}</td>
+            <td class='text-left'>{{ match.getUserExt() }}</td>
+        </tr>
+    {% endfor %}
+{% endblock %}

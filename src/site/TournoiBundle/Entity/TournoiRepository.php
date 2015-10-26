@@ -10,4 +10,16 @@ namespace site\TournoiBundle\Entity;
  */
 class TournoiRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function getMatchsWithUsers(){
+        $qb = $this
+            ->createQueryBuilder('t')
+            ->join('t.matchs', 'matchs')
+            ->addSelect('matchs')
+        ;
+
+        return $qb
+            ->getQuery()
+            ->getResult()
+            ;
+    }
 }

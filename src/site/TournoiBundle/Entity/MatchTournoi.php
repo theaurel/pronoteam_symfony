@@ -65,6 +65,11 @@ class MatchTournoi
      */
     private $home;
 
+    /**
+     * @ORM\OneToMany(targetEntity="site\TournoiBundle\Entity\Buteur", mappedBy="match_tournoi", cascade={"remove"})
+     */
+    private $buteurs;
+
 
     /**
      * Get id
@@ -266,5 +271,46 @@ class MatchTournoi
     public function getHome()
     {
         return $this->home;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->buteurs = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add buteur
+     *
+     * @param \site\TournoiBundle\Entity\Buteur $buteur
+     *
+     * @return MatchTournoi
+     */
+    public function addButeur(\site\TournoiBundle\Entity\Buteur $buteur)
+    {
+        $this->buteurs[] = $buteur;
+
+        return $this;
+    }
+
+    /**
+     * Remove buteur
+     *
+     * @param \site\TournoiBundle\Entity\Buteur $buteur
+     */
+    public function removeButeur(\site\TournoiBundle\Entity\Buteur $buteur)
+    {
+        $this->buteurs->removeElement($buteur);
+    }
+
+    /**
+     * Get buteurs
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getButeurs()
+    {
+        return $this->buteurs;
     }
 }

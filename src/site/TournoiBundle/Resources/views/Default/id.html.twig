@@ -13,7 +13,7 @@
         <th></th>
     </tr>
     </thead>
-    {%  for match in matchs %}
+    {% for match in matchs %}
         <tr id="match_{{ match.id }}">
             <td class="hidden-xs">
                 <span class='horairePetit'>
@@ -27,6 +27,7 @@
             </td>
             <td class='text-left'>{{ array_equipe[match.getUserExt().getId()].getName() }}</td>
             <td class='text-left'>{{ match.getUserExt() }}</td>
+            <td class='text-left'><a class="btn btn-primary" data-toggle="modal" data-target="#myModal" href="{{ path('score', { 'id_tournoi': tournoi.id, 'id_match':match.getId() }) }}"><i class="fa fa-pencil"></i></a></td>
         </tr>
     {% endfor %}
 {% endblock %}

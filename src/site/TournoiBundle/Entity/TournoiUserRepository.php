@@ -10,4 +10,18 @@ namespace site\TournoiBundle\Entity;
  */
 class TournoiUserRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function findByTournoiWithEquipes($tournoi){
+        $qb = $this
+            ->createQueryBuilder('t')
+            ->join('t.equipe', 'equipe')
+            ->addSelect('equipe')
+            ->where('t.tournoi = :tournoi')
+            ->setParameter('tournoi',$tournoi);
+        ;
+
+        return $qb
+            ->getQuery()
+            ->getResult()
+            ;
+    }
 }

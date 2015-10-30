@@ -1,7 +1,7 @@
 {% extends 'ajax.html.twig' %}
 
 {% block content %}
-    {{ form_start(form) }}
+    {{ form_start(form, {'attr': {'id': 'frmScore'}}) }}
     <div class="modal-body">
         <div class="row">
             <div class="col-xs-6 text-center"><h3>{{ match.getUserDom() }}</h3></div>
@@ -9,17 +9,25 @@
         </div>
         <div class="row">
             <div class="col-xs-6">
-                <div class="scoreDomicile form-group text-center input-group">
-                    <span class="input-group-btn"><button type="button" class="btn btn-primary moins"><span class="glyphicon glyphicon-minus"></span></button></span>
+                <div class="scoreDomicile input-group">
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-primary moins"><i class="fa fa-minus"></i></button>
+                    </span>
                     {{ form_widget(form.scoreDom, {'attr': {'class': 'text-center inputScore form-control'}}) }}
-                    <span class="input-group-btn"><button type="button" class="btn btn-primary plus"><span class="glyphicon glyphicon-plus"></span></button></span>
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-primary plus"><i class="fa fa-plus"></i></button>
+                    </span>
                 </div>
             </div>
             <div class="col-xs-6">
-                <div class="scoreExterieur form-group text-center input-group">
-                    <span class="input-group-btn"><button type="button" class="btn btn-primary moins"><span class="glyphicon glyphicon-minus"></span></button></span>
+                <div class="scoreExterieur  input-group">
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-primary moins"><i class="fa fa-minus"></i></button>
+                    </span>
                     {{ form_widget(form.scoreExt, {'attr': {'class': 'text-center inputScore form-control'}}) }}
-                    <span class="input-group-btn"><button type="button" class="btn btn-primary plus"><span class="glyphicon glyphicon-plus"></span></button></span>
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-primary plus"><i class="fa fa-plus"></i></button>
+                    </span>
                 </div>
             </div>
         </div>
@@ -29,13 +37,26 @@
     </div>
 
     <div class="modal-footer">
-        {{ form_widget(form.save, {'attr': {'class': 'btn btn-primary'}}) }}
+        {{ form_widget(form.save, {'attr': {'class': 'btn btn-primary','data-dismiss':'modal'}}) }}
     </div>
     {{ form_rest(form) }}
     {{ form_end(form) }}
 {% endblock %}
 {% block javascripts %}
+    {{ parent() }}
     <script type="text/javascript">
+        function saveScore(frm){
+            frm.find('button[type=submit]').button('loading');
+            $.post(
+                frm.prop('action'),
+                frm.serialize(),
+                function(response){
+                    if(response.html){
+                        $('#myModal .modal-content').html(response.html);
+                    }
+                },'json'
+            )
+        }
         $(function(){
             $('.moins').click(function(){
                 var input = $(this).parent().parent().find('.inputScore');
@@ -45,76 +66,32 @@
                     value = 0;
                 }
                 input.val(value);
+                saveScore($('#frmScore'));
             });
             $('.plus').click(function(){
                 var input = $(this).parent().parent().find('.inputScore');
                 var value = input.val();
                 value++;
                 input.val(value);
+                saveScore($('#frmScore'));
             });
 
             $(document).ready(function() {
-                // On récupère la balise <div> en question qui contient l'attribut « data-prototype » qui nous intéresse.
-                var $container = $('div#form_buteurs');
-
-                // On ajoute un lien pour ajouter une nouvelle catégorie
-                var $addLink = $('<a href="#" id="add_category" class="btn btn-default">Ajouter une catégorie</a>');
-                $container.append($addLink);
-
-                // On ajoute un nouveau champ à chaque clic sur le lien d'ajout.
-                $addLink.click(function(e) {
-                    addCategory($container);
-                    e.preventDefault(); // évite qu'un # apparaisse dans l'URL
+                $('#frmScore').submit(function(e){
+                    saveScore($('#frmScore'));
+                    e.preventDefault();
                     return false;
                 });
-
-                // On définit un compteur unique pour nommer les champs qu'on va ajouter dynamiquement
+                /*var $containerdomicile = $('div#form_buteursDomicile');
                 var index = $container.find(':input').length;
+                addCategory($containerdomicile);
 
-                // On ajoute un premier champ automatiquement s'il n'en existe pas déjà un (cas d'une nouvelle annonce par exemple).
-                if (index == 0) {
-                    addCategory($container);
-                } else {
-                    // Pour chaque catégorie déjà existante, on ajoute un lien de suppression
-                    $container.children('div').each(function() {
-                        addDeleteLink($(this));
-                    });
-                }
-
-                // La fonction qui ajoute un formulaire Categorie
                 function addCategory($container) {
-                    // Dans le contenu de l'attribut « data-prototype », on remplace :
-                    // - le texte "__name__label__" qu'il contient par le label du champ
-                    // - le texte "__name__" qu'il contient par le numéro du champ
                     var $prototype = $($container.attr('data-prototype').replace(/__name__label__/g, 'Catégorie n°' + (index+1))
                             .replace(/__name__/g, index));
-
-                    // On ajoute au prototype un lien pour pouvoir supprimer la catégorie
-                    addDeleteLink($prototype);
-
-                    // On ajoute le prototype modifié à la fin de la balise <div>
                     $container.append($prototype);
-
-                    // Enfin, on incrémente le compteur pour que le prochain ajout se fasse avec un autre numéro
                     index++;
-                }
-
-                // La fonction qui ajoute un lien de suppression d'une catégorie
-                function addDeleteLink($prototype) {
-                    // Création du lien
-                    $deleteLink = $('<a href="#" class="btn btn-danger">Supprimer</a>');
-
-                    // Ajout du lien
-                    $prototype.append($deleteLink);
-
-                    // Ajout du listener sur le clic du lien
-                    $deleteLink.click(function(e) {
-                        $prototype.remove();
-                        index = $container.find(':input').length;
-                        e.preventDefault(); // évite qu'un # apparaisse dans l'URL
-                        return false;
-                    });
-                }
+                }*/
             });
         });
     </script>

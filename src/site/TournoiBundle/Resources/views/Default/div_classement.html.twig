@@ -1,0 +1,36 @@
+{% block content %}
+    <table class='table table-condensed table-hover table-striped'>
+        <thead>
+        <tr>
+            <th></th>
+            <th>Pseudo</th>
+            <th>Equipe</th>
+            <th>Pts</th>
+            <th>J</th>
+            <th>G</th>
+            <th>N</th>
+            <th>P</th>
+            <th>Bp</th>
+            <th>Bc</th>
+            <th>Diff</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for user in classement %}
+                <tr>
+                    <td></td>
+                    <td>{{ user.0.username }}</td>
+                    <td>{{ user.equipe_name }}</td>
+                    <td>{{ user.PTS }}</td>
+                    <td>{{ user.J }}</td>
+                    <td>{{ user.V }}</td>
+                    <td>{{ user.N }}</td>
+                    <td>{{ user.D }}</td>
+                    <td>{{ user.BP }}</td>
+                    <td>{{ user.BC }}</td>
+                    <td>{{ user.DIFF }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

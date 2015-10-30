@@ -10,4 +10,31 @@ namespace OC\UserBundle\Entity;
  */
 class UserRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function getClassementTournoi($tournoi){
+        $query = $this->getEntityManager()
+            ->createQuery(
+                "
+                    SELECT DISTINCT u, e.name AS equipe_name,
+                    SUM(CASE WHEN (u = m.userDom AND m.scoreDom > m.scoreExt) OR (u = m.userExt AND m.scoreExt > m.scoreDom) THEN 1 ELSE 0 END) * 3 + SUM(CASE WHEN (m.scoreDom = m.scoreExt) THEN 1 ELSE 0 END) AS PTS,
+                    SUM(CASE WHEN (m.scoreDom IS NOT NULL AND m.scoreExt IS NOT NULL) THEN 1 ELSE 0 END) AS J,
+                    SUM(CASE WHEN (u = m.userDom AND m.scoreDom > m.scoreExt) OR (u = m.userExt AND m.scoreExt > m.scoreDom) THEN 1 ELSE 0 END) AS V,
+                    SUM(CASE WHEN (m.scoreDom = m.scoreExt) THEN 1 ELSE 0 END) AS N,
+                    SUM(CASE WHEN (u = m.userDom AND m.scoreDom < m.scoreExt) OR (u = m.userExt AND m.scoreExt < m.scoreDom) THEN 1 ELSE 0 END) AS D,
+                    SUM(CASE WHEN (u = m.userDom) THEN m.scoreDom ELSE m.scoreExt END) AS BP,
+                    SUM(CASE WHEN (u = m.userDom) THEN m.scoreExt ELSE m.scoreDom END) AS BC,
+                    SUM(CASE WHEN (u = m.userDom) THEN m.scoreDom ELSE m.scoreExt END) - SUM(CASE WHEN (u = m.userDom) THEN m.scoreExt ELSE m.scoreDom END) AS DIFF
+                    FROM OCUserBundle:User u
+                    JOIN siteTournoiBundle:TournoiUser tu WITH tu.user = u
+                    LEFT JOIN siteFrontBundle:Equipe e WITH tu.equipe = e
+                    LEFT JOIN siteTournoiBundle:MatchTournoi m WITH m.tournoi = tu.tournoi AND (m.userDom = u OR m.userExt = u)
+                    WHERE (tu.tournoi = :tournoi)
+                    GROUP BY u.id
+                    ORDER BY PTS DESC, DIFF DESC, BP DESC, BC ASC
+                "
+            )
+            ->setParameter('tournoi',$tournoi);
+
+        return $query->getResult();
+
+    }
 }

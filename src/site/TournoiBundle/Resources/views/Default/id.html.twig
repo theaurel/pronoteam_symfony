@@ -1,33 +1,48 @@
-{% extends 'siteFrontBundle::layout.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block content %}
-    <table class='filter table table-condensed table-hover table-striped'>
-    <thead>
-    <tr>
-        <th class="hidden-xs"></th>
-        <th class="text-right">Joueur Domicile</th>
-        <th class="text-right">Equipe Domicile</th>
-        <th class="text-center">Score</th>
-        <th class="text-left">Equipe Exterieur</th>
-        <th class="text-left">Joueur Exterieur</th>
-        <th></th>
-    </tr>
-    </thead>
-    {% for match in matchs %}
-        <tr id="match_{{ match.id }}">
-            <td class="hidden-xs">
-                <span class='horairePetit'>
-                    {{ match.dateScore|date('Y-m-d H:i:s')  }}
-                </span>
-            </td>
-            <td class='text-right'>{{ match.getUserDom() }}</td>
-            <td class='text-right'>{{ array_equipe[match.getUserDom().getId()].getName() }}</td>
-            <td class='score text-center bold'>
-                {{ match.scoreDom }} - {{ match.scoreExt }}
-            </td>
-            <td class='text-left'>{{ array_equipe[match.getUserExt().getId()].getName() }}</td>
-            <td class='text-left'>{{ match.getUserExt() }}</td>
-            <td class='text-left'><a class="btn btn-primary" data-toggle="modal" data-target="#myModal" href="{{ path('score', { 'id_tournoi': tournoi.id, 'id_match':match.getId() }) }}"><i class="fa fa-pencil"></i></a></td>
-        </tr>
-    {% endfor %}
+    <div class="contour" style="margin-bottom:10px;">
+        <div class='text-center ui-state-default ui-corner-all'>
+            <p>Tournoi du {{ tournoi.date|date('Y-m-d H:i:s') }}</p>
+        </div>
+    </div>
+    <div class="date_last_update">
+        <span>{{ date_last_update|date('Y-m-d H:i:s') }}</span>
+        <input type="hidden" id="date_last_update" value="{{ date_last_update|date('Y-m-d H:i:s') }}" />
+    </div>
+    <div class="div_classement">
+        {% include 'siteTournoiBundle:Default:div_classement.html.twig' %}
+    </div>
+    <div class="liste_matchs">
+        {% include 'siteTournoiBundle:Default:liste_matchs.html.twig' %}
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="application/javascript">
+        $(function(){
+            setInterval(function(){
+                $.ajax({
+                    timeout:45000,
+                    url: "{{ path('update', { 'id_tournoi': tournoi.id }) }}",
+                    data:{'date_sent':$('#date_last_update').val()},
+                    dataType: 'json',
+                    type: 'post',
+                    cache: 'false',
+                    success: function(data, textStatus, xhr) {
+                        if(data.change){
+                            $('#date_last_update').val(data.date_last);
+                            $('.date_last_update span').text(data.date_last);
+                            if(data.liste_matchs){
+                                $('.liste_matchs').html(data.liste_matchs);
+                            }
+                            if(data.div_classement){
+                                $('.div_classement').html(data.div_classement);
+                            }
+                        }
+                    }
+                });
+            },5000);
+        });
+    </script>
 {% endblock %}

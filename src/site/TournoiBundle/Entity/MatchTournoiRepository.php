@@ -10,14 +10,18 @@ namespace site\TournoiBundle\Entity;
  */
 class MatchTournoiRepository extends \Doctrine\ORM\EntityRepository
 {
-    public function getMatchsWithUsers($tournoi)
+    public function getMatchsWithUsersAndEquipes($tournoi)
     {
         $qb = $this
             ->createQueryBuilder('m')
             ->join('m.userDom', 'userDom')
-            ->addSelect('userDom')
             ->join('m.userExt', 'userExt')
+            ->join('m.equipeDom', 'equipeDom')
+            ->join('m.equipeExt', 'equipeExt')
+            ->addSelect('userDom')
             ->addSelect('userExt')
+            ->addSelect('equipeDom')
+            ->addSelect('equipeExt')
             ->where('m.tournoi = :tournoi')
             ->setParameter('tournoi',$tournoi)
         ;
@@ -26,5 +30,23 @@ class MatchTournoiRepository extends \Doctrine\ORM\EntityRepository
             ->getQuery()
             ->getResult()
             ;
+    }
+
+    public function getLastScoreMatch($tournoi)
+    {
+        $query = $this
+            ->createQueryBuilder('m')
+            ->where('m.tournoi = :tournoi')
+            ->setParameter('tournoi',$tournoi)
+            ->orderBy('m.dateScore','DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+        ;
+
+        try {
+            return $query->getSingleResult();
+        } catch (\Doctrine\ORM\NoResultException $e) {
+            return null;
+        }
     }
 }

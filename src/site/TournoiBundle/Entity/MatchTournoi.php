@@ -30,10 +30,22 @@ class MatchTournoi
     private $userDom;
 
     /**
+     * @ORM\ManyToOne(targetEntity="site\FrontBundle\Entity\Equipe", cascade={"remove"})
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $equipeDom;
+
+    /**
      * @ORM\ManyToOne(targetEntity="OC\UserBundle\Entity\User", cascade={"remove"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $userExt;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="site\FrontBundle\Entity\Equipe", cascade={"remove"})
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $equipeExt;
 
     /**
      * @var integer $scoreDom
@@ -272,12 +284,61 @@ class MatchTournoi
     {
         return $this->home;
     }
+
     /**
      * Constructor
      */
     public function __construct()
     {
         $this->buteurs = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Set equipeDom
+     *
+     * @param \site\FrontBundle\Entity\Equipe $equipeDom
+     *
+     * @return MatchTournoi
+     */
+    public function setEquipeDom(\site\FrontBundle\Entity\Equipe $equipeDom = null)
+    {
+        $this->equipeDom = $equipeDom;
+
+        return $this;
+    }
+
+    /**
+     * Get equipeDom
+     *
+     * @return \site\FrontBundle\Entity\Equipe
+     */
+    public function getEquipeDom()
+    {
+        return $this->equipeDom;
+    }
+
+    /**
+     * Set equipeExt
+     *
+     * @param \site\FrontBundle\Entity\Equipe $equipeExt
+     *
+     * @return MatchTournoi
+     */
+    public function setEquipeExt(\site\FrontBundle\Entity\Equipe $equipeExt = null)
+    {
+        $this->equipeExt = $equipeExt;
+
+        return $this;
+    }
+
+    /**
+     * Get equipeExt
+     *
+     * @return \site\FrontBundle\Entity\Equipe
+     */
+    public function getEquipeExt()
+    {
+        return $this->equipeExt;
     }
 
     /**

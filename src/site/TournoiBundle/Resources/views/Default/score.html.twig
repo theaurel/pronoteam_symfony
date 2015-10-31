@@ -37,7 +37,7 @@
     </div>
 
     <div class="modal-footer">
-        {{ form_widget(form.save, {'attr': {'class': 'btn btn-primary','data-dismiss':'modal'}}) }}
+        {{ form_widget(form.save, {'attr': {'class': 'btn btn-primary'}}) }}
     </div>
     {{ form_rest(form) }}
     {{ form_end(form) }}
@@ -45,19 +45,27 @@
 {% block javascripts %}
     {{ parent() }}
     <script type="text/javascript">
-        function saveScore(frm){
-            frm.find('button[type=submit]').button('loading');
-            $.post(
-                frm.prop('action'),
-                frm.serialize(),
-                function(response){
-                    if(response.html){
-                        $('#myModal .modal-content').html(response.html);
-                    }
-                },'json'
-            )
-        }
         $(function(){
+            var xhrscore = null;
+            function saveScore(frm, closeDialog){
+                frm.find('button[type=submit]').button('loading');
+                xhrscore = $.ajax({
+                    timeout:45000,
+                    url: frm.prop('action'),
+                    data:frm.serialize(),
+                    dataType: 'json',
+                    type: 'post',
+                    cache: 'false',
+                    success: function(data, textStatus, xhr) {
+                        if(data.html){
+                            $('#myModal .modal-content').html(data.html);
+                        }
+                        if(closeDialog){
+                            $('#myModal').modal('hide');
+                        }
+                    }
+                });
+            }
             $('.moins').click(function(){
                 var input = $(this).parent().parent().find('.inputScore');
                 var value = input.val();
@@ -66,19 +74,25 @@
                     value = 0;
                 }
                 input.val(value);
-                saveScore($('#frmScore'));
+                if(xhrscore)
+                    xhrscore.abort();
+                saveScore($('#frmScore'),false);
             });
             $('.plus').click(function(){
                 var input = $(this).parent().parent().find('.inputScore');
                 var value = input.val();
                 value++;
                 input.val(value);
-                saveScore($('#frmScore'));
+                if(xhrscore)
+                    xhrscore.abort();
+                saveScore($('#frmScore'),false);
             });
 
             $(document).ready(function() {
                 $('#frmScore').submit(function(e){
-                    saveScore($('#frmScore'));
+                    if(xhrscore)
+                        xhrscore.abort();
+                    saveScore($('#frmScore'),true);
                     e.preventDefault();
                     return false;
                 });

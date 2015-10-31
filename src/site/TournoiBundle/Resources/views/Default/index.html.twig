@@ -1,9 +1,11 @@
 {% extends 'base.html.twig' %}
 
 {% block content %}
-    <ul>
+    <table class='table table-condensed table-hover table-striped'>
         {% for tournoi in tournois %}
-            <li><a href="{{ path('tournoiid', { 'id_tournoi': tournoi.id }) }}">{{ tournoi.place }}</a></li>
+            <tr>
+                <td><a href="{{ path('tournoiid', { 'id_tournoi': tournoi.id }) }}">{{ tournoi.place }}</a></td>
+            </tr>
         {% endfor %}
-    </ul>
+    </table>
 {% endblock %}

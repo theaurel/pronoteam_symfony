@@ -118,10 +118,15 @@ class DefaultController extends Controller
         $match = $em->getRepository('siteTournoiBundle:MatchTournoi')
             ->find($id_match);
 
+        if($match->getScoreDom() == null)
+            $match->setScoreDom(0);
+        if($match->getScoreExt() == null)
+            $match->setScoreExt(0);
+
         $form = $this->createFormBuilder($match)
             ->setAction($this->generateUrl('score', array('id_tournoi' => $id_tournoi, 'id_match' => $id_match)))
-            ->add('scoreDom', 'text')
-            ->add('scoreExt', 'text')
+            ->add('scoreDom', 'integer')
+            ->add('scoreExt', 'integer')
             ->add('save', 'submit', array('label' => 'Fermer'))
             ->getForm();
 

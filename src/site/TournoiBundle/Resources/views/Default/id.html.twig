@@ -21,8 +21,9 @@
     {{ parent() }}
     <script type="application/javascript">
         $(function(){
-            setInterval(function(){
-                $.ajax({
+            var xhr = null;
+            function updateTournoi(){
+                xhr = $.ajax({
                     timeout:45000,
                     url: "{{ path('update', { 'id_tournoi': tournoi.id }) }}",
                     data:{'date_sent':$('#date_last_update').val()},
@@ -42,6 +43,11 @@
                         }
                     }
                 });
+            }
+            setInterval(function(){
+                if(xhr)
+                    xhr.abort();
+                updateTournoi();
             },5000);
         });
     </script>

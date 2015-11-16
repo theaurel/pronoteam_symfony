@@ -1,6 +1,7 @@
 <?php
 
 namespace site\TournoiBundle\Entity;
+use site\TournoiBundle\siteTournoiBundle;
 
 /**
  * ButeurRepository
@@ -14,5 +15,54 @@ class ButeurRepository extends \Doctrine\ORM\EntityRepository
         return $this
             ->createQueryBuilder('b')
             ;
+    }
+
+    public function getButeurs($match_tournoi, $equipe)
+    {
+        $qb = $this
+            ->createQueryBuilder('b')
+            ->where('b.match_tournoi = :match_tournoi')
+            ->setParameter('match_tournoi',$match_tournoi)
+            ->andWhere('b.equipe = :equipe')
+            ->setParameter('equipe',$equipe)
+        ;
+
+        return $qb
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    public function getListButeurs($equipe)
+    {
+        $qb = $this
+            ->createQueryBuilder('b')
+            ->distinct(true)
+            ->andWhere('b.equipe = :equipe')
+            ->setParameter('equipe',$equipe)
+        ;
+
+        return $qb
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    public function getClassementButeurs(Tournoi $tournoi)
+    {
+        $query = $this->getEntityManager()
+            ->createQuery(
+                "
+                    SELECT count(b.name) AS nombre, b.name AS name
+                    FROM siteTournoiBundle:Buteur b
+                    INNER JOIN siteTournoiBundle:MatchTournoi m WITH m = b.match_tournoi
+                    WHERE (m.tournoi = :tournoi)
+                    GROUP BY name
+                    ORDER BY nombre DESC
+                "
+            )
+            ->setParameter('tournoi',$tournoi);
+
+        return $query->getResult();
     }
 }

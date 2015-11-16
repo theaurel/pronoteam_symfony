@@ -2,6 +2,7 @@
 
 namespace site\TournoiBundle\Controller;
 
+use site\TournoiBundle\Entity\Buteur;
 use site\TournoiBundle\siteTournoiBundle;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -53,11 +54,14 @@ class DefaultController extends Controller
         $lastMatch = $em->getRepository('siteTournoiBundle:MatchTournoi')
             ->getLastScoreMatch($tournoi);
 
+        $classementButeurs = $em->getRepository('siteTournoiBundle:Buteur')
+            ->getClassementButeurs($tournoi);
+
         $date_last_update = new \DateTime();
         if($lastMatch)
             $date_last_update = $lastMatch->getDateScore();
 
-        return $this->render('siteTournoiBundle:Default:id.html.twig', array("tournoi"=>$tournoi, "matchs"=>$matchs, "users" => $users, "classement" => $classement, "date_last_update" => $date_last_update));
+        return $this->render('siteTournoiBundle:Default:id.html.twig', array("tournoi"=>$tournoi, "matchs"=>$matchs, "users" => $users, "classement" => $classement, "date_last_update" => $date_last_update, 'classementButeurs' => $classementButeurs));
     }
 
     /**
@@ -94,8 +98,12 @@ class DefaultController extends Controller
             $matchs = $em->getRepository('siteTournoiBundle:MatchTournoi')
                 ->getMatchsWithUsersAndEquipes($tournoi);
 
+            $classementButeurs = $em->getRepository('siteTournoiBundle:Buteur')
+                ->getClassementButeurs($tournoi);
+
             $return["liste_matchs"] = $this->render('siteTournoiBundle:Default:liste_matchs.html.twig', array("tournoi" => $tournoi, "matchs"=>$matchs))->getContent();
             $return["div_classement"] = $this->render('siteTournoiBundle:Default:div_classement.html.twig', array("tournoi" => $tournoi, "classement"=>$classement))->getContent();
+            $return["liste_buteurs"] = $this->render('siteTournoiBundle:Default:liste_buteurs.html.twig', array("tournoi" => $tournoi, "classementButeurs"=>$classementButeurs))->getContent();
         }
 
         //return $this->render('siteTournoiBundle:Default:id.html.twig', array("tournoi"=>$tournoi, "matchs"=>$matchs, "users" => $users, "date_last_update" => $date_last_update));
@@ -130,18 +138,89 @@ class DefaultController extends Controller
             ->add('save', 'submit', array('label' => 'Fermer'))
             ->getForm();
 
+        $equipeDom = $match->getEquipeDom();
+        $equipeExt = $match->getEquipeExt();
+
+        $ButeurRepository = $em->getRepository('siteTournoiBundle:Buteur');
+        $buteursDomicile = $ButeurRepository->getButeurs($match,$equipeDom);
+        $buteursExterieur = $ButeurRepository->getButeurs($match,$equipeExt);
+        $listButeursDomicile = $ButeurRepository->getListButeurs($equipeDom);
+        $listButeursExterieur = $ButeurRepository->getListButeurs($equipeExt);
+
+        $valuesDom = array();
+        if($buteursDomicile){
+            foreach($buteursDomicile as $buteur){
+                $valuesDom[] = $buteur->getName();
+            }
+        }
+        for ($i = count($valuesDom) ; $i <= 15 ; $i++){
+            $valuesDom[] = null;
+        }
+        $valuesExt = array();
+        if($buteursExterieur){
+            foreach($buteursExterieur as $buteur){
+                $valuesExt[] = $buteur->getName();
+            }
+        }
+        for ($i = count($valuesExt) ; $i <= 15 ; $i++){
+            $valuesExt[] = null;
+        }
+        $selectDom = array();
+        if($listButeursDomicile){
+            foreach($listButeursDomicile as $buteur){
+                $selectDom[$buteur->getName()] = $buteur->getName();
+            }
+        }
+        $selectExt = array();
+        if($listButeursExterieur){
+            foreach($listButeursExterieur as $buteur){
+                $selectExt[$buteur->getName()] = $buteur->getName();
+            }
+        }
+
+        $parameters = array(
+            "tournoi"=>$tournoi,
+            "selectDom"=>$selectDom,
+            "selectExt"=>$selectExt,
+            "valuesDom"=>$valuesDom,
+            "valuesExt"=>$valuesExt,
+            "match"=>$match,
+            "form" => $form->createView()
+        );
+
         $form->handleRequest($request);
         if ($form->isValid()) {
+            foreach($buteursDomicile as $buteur){
+                $em->remove($buteur);
+            }
+            unset($buteur);
+            foreach($buteursExterieur as $buteur){
+                $em->remove($buteur);
+            }
+            unset($buteur);
+            $postbuteurs = $request->request->get('buteurs');
+            foreach($postbuteurs as $id_equipe => $buteurs){
+                $equipe = $id_equipe == $equipeDom->getId() ? $equipeDom : $equipeExt;
+                foreach($buteurs as $buteur){
+                    $new = new Buteur();
+                    $new->setEquipe($equipe);
+                    $new->setMatchTournoi($match);
+                    $new->setName($buteur);
+                    $em->persist($new);
+                }
+            }
+
             $match->setDateScore(new \DateTime());
             $em->flush();
 
-            $render = $this->render('siteTournoiBundle:Default:score.html.twig', array("tournoi"=>$tournoi, "match"=>$match, "form" => $form->createView()));
+            $render = $this->render('siteTournoiBundle:Default:score.html.twig', $parameters);
 
             return new JsonResponse(array(
-                'html' => $render->getContent()
+                'data' => $form->getData(),
+                //'html' => $render->getContent()
             ));
         }
 
-        return $this->render('siteTournoiBundle:Default:score.html.twig', array("tournoi"=>$tournoi, "match"=>$match, "form" => $form->createView()));
+        return $this->render('siteTournoiBundle:Default:score.html.twig', $parameters);
     }
 }

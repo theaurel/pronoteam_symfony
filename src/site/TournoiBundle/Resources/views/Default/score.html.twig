@@ -9,7 +9,7 @@
         </div>
         <div class="row">
             <div class="col-xs-6">
-                <div class="scoreDomicile input-group">
+                <div id="scoreDomicile" class="scoreDomicile input-group">
                     <span class="input-group-btn">
                         <button type="button" class="btn btn-primary moins"><i class="fa fa-minus"></i></button>
                     </span>
@@ -20,7 +20,7 @@
                 </div>
             </div>
             <div class="col-xs-6">
-                <div class="scoreExterieur  input-group">
+                <div id="scoreExterieur" class="scoreExterieur  input-group">
                     <span class="input-group-btn">
                         <button type="button" class="btn btn-primary moins"><i class="fa fa-minus"></i></button>
                     </span>
@@ -28,6 +28,34 @@
                     <span class="input-group-btn">
                         <button type="button" class="btn btn-primary plus"><i class="fa fa-plus"></i></button>
                     </span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-6">
+                <div class="buteursscoreDomicile">
+                    {%  for value in valuesDom %}
+                        <div style="{% if value == null %}display:none{% endif %}">
+                            <select name="buteurs[{{ match.getEquipeDom().getId() }}][]" {% if value == null %}disabled=disabled{% endif %} class="form-control">
+                                {% for buteur in selectDom %}
+                                    <option {% if value == buteur %}selected=selected{% endif %} value="{{ buteur }}">{{ buteur }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-xs-6">
+                <div class="buteursscoreExterieur">
+                    {%  for value in valuesExt %}
+                        <div style="{% if value == null %}display:none{% endif %}">
+                            <select name="buteurs[{{ match.getEquipeExt().getId() }}][]" {% if value == null %}disabled=disabled{% endif %} class="form-control">
+                                {% for buteur in selectExt %}
+                                    <option {% if value == buteur %}selected=selected{% endif %} value="{{ buteur }}">{{ buteur }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>
@@ -48,6 +76,8 @@
         $(function(){
             var xhrscore = null;
             function saveScore(frm, closeDialog){
+                if(xhrscore)
+                    xhrscore.abort();
                 frm.find('button[type=submit]').button('loading');
                 xhrscore = $.ajax({
                     timeout:45000,
@@ -59,6 +89,8 @@
                     success: function(data, textStatus, xhr) {
                         if(data.html){
                             $('#myModal .modal-content').html(data.html);
+                        } else {
+                            frm.find('button[type=submit]').button('reset');
                         }
                         if(closeDialog){
                             $('#myModal').modal('hide');
@@ -67,31 +99,33 @@
                 });
             }
             $('.moins').click(function(){
-                var input = $(this).parent().parent().find('.inputScore');
+                var parent = $(this).parent().parent();
+                var input = parent.find('.inputScore');
                 var value = input.val();
                 value--;
                 if(value < 0){
                     value = 0;
                 }
                 input.val(value);
-                if(xhrscore)
-                    xhrscore.abort();
-                saveScore($('#frmScore'),false);
+                var buteursDiv = "buteurs" + parent.prop('id');
+                $( "." + buteursDiv + ">div").hide().find('select').prop('disabled','disabled');
+                $( "." + buteursDiv + ">div:lt("+value+")").show().find('select').prop('disabled',false);
+                //saveScore($('#frmScore'),false);
             });
             $('.plus').click(function(){
-                var input = $(this).parent().parent().find('.inputScore');
+                var parent = $(this).parent().parent();
+                var input = parent.find('.inputScore');
                 var value = input.val();
                 value++;
                 input.val(value);
-                if(xhrscore)
-                    xhrscore.abort();
-                saveScore($('#frmScore'),false);
+                var buteursDiv = "buteurs" + parent.prop('id');
+                $( "." + buteursDiv + ">div").hide().find('select').prop('disabled','disabled');
+                $( "." + buteursDiv + ">div:lt("+value+")").show().find('select').prop('disabled',false);
+                //saveScore($('#frmScore'),false);
             });
 
             $(document).ready(function() {
                 $('#frmScore').submit(function(e){
-                    if(xhrscore)
-                        xhrscore.abort();
                     saveScore($('#frmScore'),true);
                     e.preventDefault();
                     return false;

@@ -19,19 +19,19 @@ class User extends BaseUser
 
     /**
      * @var boolean $mail_recevable
-     * @ORM\Column(name="mail_recevable", type="boolean", options={"default":1})
+     * @ORM\Column(name="mail_recevable", type="boolean", options={"default":true})
      */
     private $mail_recevable;
 
     /**
      * @var boolean $mail_forum_recevable
-     * @ORM\Column(name="mail_forum_recevable", type="boolean", options={"default":1})
+     * @ORM\Column(name="mail_forum_recevable", type="boolean", options={"default":true})
      */
     private $mail_forum_recevable;
 
     /**
      * @var boolean $sms_recevable
-     * @ORM\Column(name="sms_recevable", type="boolean", options={"default":1})
+     * @ORM\Column(name="sms_recevable", type="boolean", options={"default":true})
      */
     private $sms_recevable;
 
@@ -70,6 +70,15 @@ class User extends BaseUser
      * @ORM\Column(name="menu_tournoi", type="boolean")
      */
     private $menu_tournoi;
+
+    public function __construct(){
+        parent::__construct();
+        $this->mail_recevable = true;
+        $this->enabled = true;
+        $this->sms_recevable = true;
+        $this->mail_forum_recevable = true;
+        $this->menu_tournoi = false;
+    }
 
     /**
      * Set recoimail

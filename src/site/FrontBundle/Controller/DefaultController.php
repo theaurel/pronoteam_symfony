@@ -20,7 +20,6 @@ class DefaultController extends Controller
 
         // Pour charger un utilisateur
         $user = $userManager->findBy(array('username' => 'aurel'));
-        dump($user);
 
         // Pour supprimer un utilisateur
         //$userManager->deleteUser($user);

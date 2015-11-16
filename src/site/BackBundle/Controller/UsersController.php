@@ -40,7 +40,7 @@ class UsersController extends Controller
         // Pour récupérer le service UserManager du bundle
         $userManager = $this->get('fos_user.user_manager');
         // On crée un objet Advert
-        $user = new User();
+        $user = $userManager->createUser();
 
         // On crée le FormBuilder grâce au service form factory
         $formBuilder = $this->get('form.factory')->createBuilder('form', $user);
@@ -63,7 +63,8 @@ class UsersController extends Controller
         if ($form->isValid()) {
             // On l'enregistre notre objet $advert dans la base de données, par exemple
             $em = $this->getDoctrine()->getManager();
-            $userManager->updateUser($user);
+            $userManager->updateUser($user, false);
+            $em->flush();
 
             $request->getSession()->getFlashBag()->add('notice', 'Annonce bien enregistrée.');
 

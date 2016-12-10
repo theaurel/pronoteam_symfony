@@ -3,33 +3,52 @@
     <head>
         <meta charset="UTF-8">
         <title>{% block title %}Watch My Desk{% endblock %}</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         {% block stylesheets %}
             <!-- Latest compiled and minified CSS -->
-            <link rel="stylesheet" href="/addons/bootstrap/css/bootstrap.min.css">
-            <link rel="stylesheet" href="/addons/font-awesome/css/font-awesome.min.css">
-            <link rel="stylesheet" href="/addons/style.css">
+            <link rel="stylesheet" type="text/css" href="/addons/bootstrap/css/bootstrap.min.css">
+            <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" >
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.min.css">
+            <link rel="stylesheet" type="text/css" href="/addons/style.css">
         {% endblock %}
     </head>
     <body>
         <nav class="navbar navbar-default navbar-fixed-top">
             <div class="container-fluid">
-                <ul class="nav navbar-nav navbar-right">
-                    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                    <li class="dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown" href='#' onclick="return false;"><span class="hidden-xs hidden-sm">Bienvenue</span> <span class='glyphicon glyphicon-cog'></span></a>
-                        <span class="dropdown-arrow dropdown-arrow-inverse"></span>
-                        <ul class="dropdown-menu dropdown-inverse">
-                            <li><a href=''>Mon compte</a></li>
-                            <li><a href=''>Déconnexion</a></li>
-                        </ul>
-                    </li>
-                    {% else %}
-                    <li><a href=''>Créer un compte</a></li>
-                    <li>
-                        <a href='#' class="identification">S'identifier</a>
-                    </li>
-                    {% endif %}
-                </ul>
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">Brand</a>
+                </div>
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        {% if is_granted('ROLE_USER') %}
+                        <li><a href="{{ path('tournoi') }}">Tournoi</a></li>
+                        {% endif %}
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                            <li class="dropdown">
+                                <a class="dropdown-toggle" data-toggle="dropdown" href='#' onclick="return false;"><span class="hidden-xs hidden-sm">Bienvenue</span> <span class='glyphicon glyphicon-cog'></span></a>
+                                <span class="dropdown-arrow dropdown-arrow-inverse"></span>
+                                <ul class="dropdown-menu dropdown-inverse">
+                                    <li><a href=''>Mon compte</a></li>
+                                    <li><a href='{{ path('fos_user_security_logout') }}'>Déconnexion</a></li>
+                                </ul>
+                            </li>
+                        {% else %}
+                            <li><a href='{{ path('fos_user_registration_register') }}'>Créer un compte</a></li>
+                            <li>
+                                <a href='{{ path('fos_user_security_login') }}' class="identification">S'identifier</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
             </div>
         </nav>
         <div class="container-fluid">{% block content %}{% endblock %}</div>
@@ -60,27 +79,30 @@
         {% block javascripts %}
             <script src="/addons/jquery-1.11.3.min.js"></script>
             <script src="/addons/bootstrap/js/bootstrap.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/bootstrap-select.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/i18n/defaults-fr_FR.min.js"></script>
+
             <script type="text/javascript">
                 $(function(){
                     $('#myModal').on('hidden.bs.modal', function () {
                         $('#myModal').removeData('bs.modal').find(".modal-content").html(
-                                '<div class="modal-body text-center">' +
-                                '<i class="fa fa-circle-o-notch fa-5x fa-pulse"></i>' +
-                                '</div>'
+                            '<div class="modal-body text-center">' +
+                            '<i class="fa fa-circle-o-notch fa-5x fa-pulse"></i>' +
+                            '</div>'
                         );
                     });
                     $('#myLargeModal').on('hidden.bs.modal', function () {
                         $('#myLargeModal').removeData('bs.modal').find(".modal-content").html(
-                                '<div class="modal-body text-center">' +
-                                '<i class="fa fa-circle-o-notch fa-5x fa-pulse"></i>' +
-                                '</div>'
+                            '<div class="modal-body text-center">' +
+                            '<i class="fa fa-circle-o-notch fa-5x fa-pulse"></i>' +
+                            '</div>'
                         );
                     });
                     $('#mySmallModal').on('hidden.bs.modal', function () {
                         $('#mySmallModal').removeData('bs.modal').find(".modal-content").html(
-                                '<div class="modal-body text-center">' +
-                                '<i class="fa fa-circle-o-notch fa-5x fa-pulse"></i>' +
-                                '</div>'
+                            '<div class="modal-body text-center">' +
+                            '<i class="fa fa-circle-o-notch fa-5x fa-pulse"></i>' +
+                            '</div>'
                         );
                     });
                 });

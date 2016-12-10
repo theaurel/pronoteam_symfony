@@ -10,14 +10,16 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use site\TournoiBundle\Form\ButeurType;
 use Symfony\Component\Validator\Constraints\DateTime;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 /**
  * @Route("/tournoi")
+ * @Security("has_role('ROLE_USER')")
  */
 class DefaultController extends Controller
 {
     /**
-     * @Route("/")
+     * @Route("/", name="tournoi")
      */
     public function indexAction()
     {
@@ -25,6 +27,7 @@ class DefaultController extends Controller
         $latestVersion = $em->getRepository('siteTournoiBundle:Version')
             ->findLatest();
 
+        $tournois = null;
         if($latestVersion){
             $tournois = $latestVersion->getTournois();
 

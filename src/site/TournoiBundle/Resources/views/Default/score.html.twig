@@ -75,9 +75,43 @@
 {% block javascripts %}
     {{ parent() }}
     <script type="text/javascript">
+        function addInputToSelect(inputToAdd){
+            console.log($(inputToAdd).val());
+            scts = $(inputToAdd).parent().parent().parent().parent().parent().find('select');
+            sct = $(inputToAdd).parent().parent().parent().find('select');
+            val = $(inputToAdd).val();
+            option = $('<option></option>').prop('value',val).text(val);
+            scts.append(option);
+            sct.val(val);
+            scts.selectpicker('refresh');
+            sct.selectpicker('toggle');
+        }
         $(function(){
             $('select').selectpicker({
-                size: 12
+                size: 12,
+                noneResultsText: "Aucun Résultat <button class='addJoueur btn btn-primary btn-xs' type='button'>Ajouter {0}</button>"
+            });
+            $('.bs-searchbox input[type=text]').keyup(function(e){
+                inputToAdd = this;
+                ul = $(this).parent().parent().find('ul');
+                noresult = ul.find('.no-results');
+                tosave = false;
+                if(noresult.length > 0){
+                    tosave = true;
+                }
+                if($(inputToAdd).val() == ''){
+                    tosave = false;
+                }
+                if(tosave){
+                    if(e.which == 13){
+                        addInputToSelect(inputToAdd);
+                    }
+                    noresult.click(function (e) {
+                        e.stopPropagation();
+                        addInputToSelect(inputToAdd);
+                        return false;
+                    });
+                }
             });
 
             var xhrscore = null;

@@ -24,7 +24,7 @@ class TournoiUser
     private $tournoi;
 
     /**
-     * @ORM\ManyToOne(targetEntity="OC\UserBundle\Entity\User")
+     * @ORM\ManyToOne(targetEntity="Application\Sonata\UserBundle\Entity\User")
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
@@ -72,11 +72,11 @@ class TournoiUser
     /**
      * Set user
      *
-     * @param \OC\UserBundle\Entity\User $user
+     * @param \Application\Sonata\UserBundle\Entity\User $user
      *
      * @return TournoiUser
      */
-    public function setUser(\OC\UserBundle\Entity\User $user)
+    public function setUser(\Application\Sonata\UserBundle\Entity\User $user)
     {
         $this->user = $user;
 
@@ -86,7 +86,7 @@ class TournoiUser
     /**
      * Get user
      *
-     * @return \OC\UserBundle\Entity\User
+     * @return \Application\Sonata\UserBundle\Entity\User
      */
     public function getUser()
     {

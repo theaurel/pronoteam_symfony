@@ -42,12 +42,12 @@ class Tournoi
     private $status;
 
     /**
-     * @ORM\ManyToOne(targetEntity="OC\UserBundle\Entity\User", cascade={"remove"})
+     * @ORM\ManyToOne(targetEntity="Application\Sonata\UserBundle\Entity\User", cascade={"remove"})
      */
     private $userCreate;
 
     /**
-     * @ORM\ManyToOne(targetEntity="OC\UserBundle\Entity\User", cascade={"remove"})
+     * @ORM\ManyToOne(targetEntity="Application\Sonata\UserBundle\Entity\User", cascade={"remove"})
      */
     private $winner;
 
@@ -261,11 +261,11 @@ class Tournoi
     /**
      * Set userCreate
      *
-     * @param \OC\UserBundle\Entity\User $userCreate
+     * @param \Application\Sonata\UserBundle\Entity\User $userCreate
      *
      * @return Tournoi
      */
-    public function setUserCreate(\OC\UserBundle\Entity\User $userCreate)
+    public function setUserCreate(\Application\Sonata\UserBundle\Entity\User $userCreate)
     {
         $this->userCreate = $userCreate;
 
@@ -275,7 +275,7 @@ class Tournoi
     /**
      * Get userCreate
      *
-     * @return \OC\UserBundle\Entity\User
+     * @return \Application\Sonata\UserBundle\Entity\User
      */
     public function getUserCreate()
     {
@@ -285,11 +285,11 @@ class Tournoi
     /**
      * Set winner
      *
-     * @param \OC\UserBundle\Entity\User $winner
+     * @param \Application\Sonata\UserBundle\Entity\User $winner
      *
      * @return Tournoi
      */
-    public function setWinner(\OC\UserBundle\Entity\User $winner = null)
+    public function setWinner(\Application\Sonata\UserBundle\Entity\User $winner = null)
     {
         $this->winner = $winner;
 
@@ -299,7 +299,7 @@ class Tournoi
     /**
      * Get winner
      *
-     * @return \OC\UserBundle\Entity\User
+     * @return \Application\Sonata\UserBundle\Entity\User
      */
     public function getWinner()
     {

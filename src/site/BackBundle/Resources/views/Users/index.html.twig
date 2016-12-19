@@ -1,10 +1,12 @@
 {% extends 'base.html.twig' %}
+
 {% block content %}
     <a class="btn btn-primary" href="{{ path('addEditUser') }}">Ajouter</a>
     <table class="table">
         {% for user in users %}
             <tr>
                 <td>{{ user.username }}</td>
+                <td><a href="{{ path('addEditUser', { 'id': user.getId() }) }}">Edit</a></td>
             </tr>
         {% endfor %}
     </table>

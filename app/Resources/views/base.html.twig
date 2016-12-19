@@ -9,7 +9,8 @@
             <!-- Latest compiled and minified CSS -->
             <link rel="stylesheet" type="text/css" href="/addons/bootstrap/css/bootstrap.min.css">
             <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" >
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.min.css">
+            <link rel="stylesheet" href="/addons/bootstrap-select/dist/css/bootstrap-select.min.css">
+            <link rel="stylesheet" href="/addons/jasny-bootstrap/css/jasny-bootstrap.min.css">
             <link rel="stylesheet" type="text/css" href="/addons/style.css">
         {% endblock %}
     </head>
@@ -79,32 +80,34 @@
         {% block javascripts %}
             <script src="/addons/jquery-1.11.3.min.js"></script>
             <script src="/addons/bootstrap/js/bootstrap.min.js"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/bootstrap-select.min.js"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/i18n/defaults-fr_FR.min.js"></script>
+            <script src="/addons/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
+            <script src="/addons/bootstrap-select/dist/js/i18n/defaults-fr_FR.min.js"></script>
+            <script src="/addons/jasny-bootstrap/js/jasny-bootstrap.min.js"></script>
 
             <script type="text/javascript">
+                $('#myModal').on('hidden.bs.modal', function () {
+                    $('#myModal').removeData('bs.modal').find(".modal-content").html(
+                            '<div class="modal-body text-center">' +
+                            '<i class="fa fa-circle-o-notch fa-5x fa-pulse"></i>' +
+                            '</div>'
+                    );
+                });
+                $('#myLargeModal').on('hidden.bs.modal', function () {
+                    $('#myLargeModal').removeData('bs.modal').find(".modal-content").html(
+                            '<div class="modal-body text-center">' +
+                            '<i class="fa fa-circle-o-notch fa-5x fa-pulse"></i>' +
+                            '</div>'
+                    );
+                });
+                $('#mySmallModal').on('hidden.bs.modal', function () {
+                    $('#mySmallModal').removeData('bs.modal').find(".modal-content").html(
+                            '<div class="modal-body text-center">' +
+                            '<i class="fa fa-circle-o-notch fa-5x fa-pulse"></i>' +
+                            '</div>'
+                    );
+                });
                 $(function(){
-                    $('#myModal').on('hidden.bs.modal', function () {
-                        $('#myModal').removeData('bs.modal').find(".modal-content").html(
-                            '<div class="modal-body text-center">' +
-                            '<i class="fa fa-circle-o-notch fa-5x fa-pulse"></i>' +
-                            '</div>'
-                        );
-                    });
-                    $('#myLargeModal').on('hidden.bs.modal', function () {
-                        $('#myLargeModal').removeData('bs.modal').find(".modal-content").html(
-                            '<div class="modal-body text-center">' +
-                            '<i class="fa fa-circle-o-notch fa-5x fa-pulse"></i>' +
-                            '</div>'
-                        );
-                    });
-                    $('#mySmallModal').on('hidden.bs.modal', function () {
-                        $('#mySmallModal').removeData('bs.modal').find(".modal-content").html(
-                            '<div class="modal-body text-center">' +
-                            '<i class="fa fa-circle-o-notch fa-5x fa-pulse"></i>' +
-                            '</div>'
-                        );
-                    });
+
                 });
             </script>
         {% endblock %}

@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% block title %}Tournois{% endblock %}
 {% block stylesheets %}
     {{ parent() }}
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.10/css/jquery.dataTables.min.css">
@@ -8,11 +9,11 @@
     <table class='table table-condensed table-hover table-striped'>
         <thead>
             <tr>
-                <th></th>
-                <th></th>
+                <th>Date</th>
+                <th>Lieu</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody data-link="row" class="rowlink">
         {% for tournoi in tournois %}
             <tr>
                 <td data-order="{{ tournoi.date|date('Y-m-d') }}" >{{ tournoi.date|date('d/m/Y')  }}</td>

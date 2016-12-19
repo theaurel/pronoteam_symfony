@@ -24,7 +24,7 @@ class MatchTournoi
     private $tournoi;
 
     /**
-     * @ORM\ManyToOne(targetEntity="OC\UserBundle\Entity\User", cascade={"remove"})
+     * @ORM\ManyToOne(targetEntity="Application\Sonata\UserBundle\Entity\User", cascade={"remove"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $userDom;
@@ -36,7 +36,7 @@ class MatchTournoi
     private $equipeDom;
 
     /**
-     * @ORM\ManyToOne(targetEntity="OC\UserBundle\Entity\User", cascade={"remove"})
+     * @ORM\ManyToOne(targetEntity="Application\Sonata\UserBundle\Entity\User", cascade={"remove"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $userExt;
@@ -216,11 +216,11 @@ class MatchTournoi
     /**
      * Set userDom
      *
-     * @param \OC\UserBundle\Entity\User $userDom
+     * @param \Application\Sonata\UserBundle\Entity\User $userDom
      *
      * @return MatchTournoi
      */
-    public function setUserDom(\OC\UserBundle\Entity\User $userDom)
+    public function setUserDom(\Application\Sonata\UserBundle\Entity\User $userDom)
     {
         $this->userDom = $userDom;
 
@@ -230,7 +230,7 @@ class MatchTournoi
     /**
      * Get userDom
      *
-     * @return \OC\UserBundle\Entity\User
+     * @return \Application\Sonata\UserBundle\Entity\User
      */
     public function getUserDom()
     {
@@ -240,11 +240,11 @@ class MatchTournoi
     /**
      * Set userExt
      *
-     * @param \OC\UserBundle\Entity\User $userExt
+     * @param \Application\Sonata\UserBundle\Entity\User $userExt
      *
      * @return MatchTournoi
      */
-    public function setUserExt(\OC\UserBundle\Entity\User $userExt)
+    public function setUserExt(\Application\Sonata\UserBundle\Entity\User $userExt)
     {
         $this->userExt = $userExt;
 
@@ -254,7 +254,7 @@ class MatchTournoi
     /**
      * Get userExt
      *
-     * @return \OC\UserBundle\Entity\User
+     * @return \Application\Sonata\UserBundle\Entity\User
      */
     public function getUserExt()
     {
